@@ -82,7 +82,8 @@ class Germanizer
 	 */
 	static function sanitize_filename_filter($filename)
 	{
-		return strtolower( self::translit($filename) );
+		$new_name = self::translit($filename);
+		return strtolower( str_replace(' ', '-', $new_name) );
 	}
 
 	/**
