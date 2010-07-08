@@ -3,10 +3,18 @@
 Plugin Name: Germanix
 Plugin URI:  http://toscho.de/
 Description: Rüstet deutsche Übersetzungen im Backend nach.
-Version:     0.1
+Version:     0.2
 Author:      Thomas Scholz
 Author URI:  http://toscho.de
 Created:     13.05.2010
+
+Changelog
+
+v 0.1
+	* Initial release
+
+v 0.2
+	* Added sanitize_filename_filter() for uploaded files.
 */
 
 if ( is_admin() )
@@ -15,12 +23,16 @@ if ( is_admin() )
 		array ( 'Germanizer', 'gettext_filter'   ),      10, 1);
 	add_filter('ngettext',
 		array ( 'Germanizer', 'ngettext_filter'  ),      10, 3);
-	add_filter('http_request_args',
-		array ( 'Germanizer', 'no_upgrade_check' ),       5, 2);
 
 	remove_filter('sanitize_title', 'sanitize_title_with_dashes');
 	add_filter('sanitize_title',
 		array ( 'Germanizer', 'sanitize_title_filter' ), 10, 1);
+	// »häßliches-bild.jpg => haessliches-bild.jpg
+	add_filter('sanitize_file_name',
+		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
+
+	add_filter('http_request_args',
+		array ( 'Germanizer', 'no_upgrade_check' ),       5, 2);
 }
 
 class Germanizer
@@ -63,18 +75,40 @@ class Germanizer
 	}
 
 	/**
-	 * Replaces German characters.
-	 * Modified version of Heiko Rabe’s code.
+	 * Fixes names of uploaded files.
 	 *
-	 * http://github.com/wordpress/wordpress/blob/master/wp-includes/formatting.php#L531
-	 * is unfortunately completely inappropriate.
+	 * @param  string $filename
+	 * @return string
+	 */
+	static function sanitize_filename_filter($filename)
+	{
+		return strtolower( self::translit($filename) );
+	}
+
+	/**
+	 * Fixes URI slugs.
 	 *
-	 * @author Heiko Rabe http://code-styling.de
-	 * @link   http://www.code-styling.de/?p=574
 	 * @param  string $title
 	 * @return string
 	 */
 	static function sanitize_title_filter($title)
+	{
+		return sanitize_title_with_dashes( self::translit($title) );
+	}
+
+	/**
+	 * Replaces non ASCII chars.
+	 *
+	 * http://github.com/wordpress/wordpress/blob/master/wp-includes/formatting.php#L531
+	 * is unfortunately completely inappropriate.
+	 * Modified version of Heiko Rabe’s code.
+	 *
+	 * @author Heiko Rabe http://code-styling.de
+	 * @link   http://www.code-styling.de/?p=574
+	 * @param  string $str
+	 * @return string
+	 */
+	static function translit($str)
 	{
 		$utf8 = array (
 				'Ä' => 'Ae'
@@ -189,20 +223,19 @@ class Germanizer
 			,	'₊' => 'plus'
 			,	'₌' => '='
 			,	'⁼' => '='
-			,	'⁻' => '-'   //sup minus
-			,	'₋' => '-'   //sub minus
-			,	'–' => '-'   //ndash
-			,	'—' => '-'   //mdash
-			,	'‑' => '-'   //non breaking hyphen
-			,	'․' => '.'    //one dot leader
-			,	'‥' => '..'  //two dot leader
-			,	'…' => '...' //ellipsis
-			,	'‧' => '.'   //hyphenation point
+			,	'⁻' => '-'    // sup minus
+			,	'₋' => '-'    // sub minus
+			,	'–' => '-'    // ndash
+			,	'—' => '-'    // mdash
+			,	'‑' => '-'    // non breaking hyphen
+			,	'․' => '.'    // one dot leader
+			,	'‥' => '..' // two dot leader
+			,	'…' => '...' // ellipsis
+			,	'‧' => '.'   // hyphenation point
+			,	' ' => '-'   // nobreak space
 		);
 
-		$title = strtr($title, $utf8);
-
-		return sanitize_title_with_dashes($title);
+		return strtr($str, $utf8);
 	}
 
 	/**
