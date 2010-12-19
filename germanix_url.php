@@ -84,7 +84,7 @@ class Germanizer
 	{
 		$str = strtolower($str);
 		// Leave underscores, otherwise the taxonomy tag cloud in the backen won’t work anymore.
-		return preg_replace('~([^a-z\d.-_])~', '', $str);
+		return preg_replace('~([^a-z\d_.-])~', '', $str);
 	}
 
 	/**
