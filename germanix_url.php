@@ -3,7 +3,7 @@
 Plugin Name: Germanix URL
 Plugin URI:  http://toscho.de/
 Description: Konvertiert URL-Slugs und Dateinamen nach US-ASCII.
-Version:     0.3
+Version:     0.4
 Author:      Thomas Scholz
 Author URI:  http://toscho.de
 Created:     13.05.2010

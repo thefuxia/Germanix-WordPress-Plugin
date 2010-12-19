@@ -17,7 +17,7 @@ v 0.2
 	* Added sanitize_filename_filter() for uploaded files.
 */
 
-if ( is_admin() )
+if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 {
 	add_filter('gettext',
 		array ( 'Germanizer', 'gettext_filter'   ),      10, 1);
@@ -26,7 +26,8 @@ if ( is_admin() )
 
 	remove_filter('sanitize_title', 'sanitize_title_with_dashes');
 	add_filter('sanitize_title',
-		array ( 'Germanizer', 'sanitize_title_filter' ), 10, 1);
+		#array ( 'Germanizer', 'sanitize_title_filter' ), 10, 1);
+		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
 	// »häßliches-bild.jpg => haessliches-bild.jpg
 	add_filter('sanitize_file_name',
 		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
@@ -82,8 +83,9 @@ class Germanizer
 	 */
 	static function sanitize_filename_filter($filename)
 	{
-		$new_name = self::translit($filename);
-		return strtolower( str_replace(' ', '-', $new_name) );
+		$filename = self::translit($filename);
+		$filename = self::remove_doubles($filename);
+		return      self::lower_ascii($filename);
 	}
 
 	/**
@@ -95,6 +97,17 @@ class Germanizer
 	static function sanitize_title_filter($title)
 	{
 		return sanitize_title_with_dashes( self::translit($title) );
+	}
+
+	static function remove_doubles($str)
+	{
+		return preg_replace('~([-=+.])\\1+~', "\\1", $str);
+	}
+
+	static function lower_ascii($str)
+	{
+		$str = strtolower($str);
+		return preg_replace('~([^a-z\d.-])~', '', $str);
 	}
 
 	/**
@@ -112,127 +125,54 @@ class Germanizer
 	static function translit($str)
 	{
 		$utf8 = array (
-				'Ä' => 'Ae'
-			,	'ä' => 'ae'
-			,	'Æ' => 'Ae'
-			,	'æ' => 'ae'
-			,	'À' => 'A'
-			,	'à' => 'a'
-			,	'Á' => 'A'
-			,	'á' => 'a'
-			,	'Â' => 'A'
-			,	'â' => 'a'
-			,	'Ã' => 'A'
-			,	'ã' => 'a'
-			,	'Å' => 'A'
-			,	'å' => 'a'
-			,	'ª' => 'a'
-			,	'ₐ' => 'a'
-			,	'Ć' => 'C'
-			,	'ć' => 'c'
-			,	'Ç' => 'C'
-			,	'ç' => 'c'
-			,	'Ð' => 'D'
-			,	'đ' => 'd'
-			,	'È' => 'E'
-			,	'è' => 'e'
-			,	'É' => 'E'
-			,	'é' => 'e'
-			,	'Ê' => 'E'
-			,	'ê' => 'e'
-			,	'Ë' => 'E'
-			,	'ë' => 'e'
+				'Ä' => 'Ae'	,	'ä' => 'ae'	,	'Æ' => 'Ae'	,	'æ' => 'ae'
+			,	'À' => 'A'	,	'à' => 'a'	,	'Á' => 'A'	,	'á' => 'a'
+			,	'Â' => 'A'	,	'â' => 'a'	,	'Ã' => 'A'	,	'ã' => 'a'
+			,	'Å' => 'A'	,	'å' => 'a'	,	'ª' => 'a'	,	'ₐ' => 'a'
+			,	'Ć' => 'C'	,	'ć' => 'c'	,	'Ç' => 'C'	,	'ç' => 'c'
+			,	'Ð' => 'D'	,	'đ' => 'd'
+			,	'È' => 'E'	,	'è' => 'e'	,	'É' => 'E'	,	'é' => 'e'
+			,	'Ê' => 'E'	,	'ê' => 'e'	,	'Ë' => 'E'	,	'ë' => 'e'
 			,	'ₑ' => 'e'
 			,	'ƒ' => 'f'
-			,	'Ì' => 'I'
-			,	'ì' => 'i'
-			,	'Í' => 'I'
-			,	'í' => 'i'
-			,	'Î' => 'I'
-			,	'î' => 'i'
-			,	'Ï' => 'Ii'
-			,	'ï' => 'ii'
-			,	'Ñ' => 'N'
-			,	'ñ' => 'n'
-			,	'ⁿ' => 'n'
-			,	'Ò' => 'O'
-			,	'ò' => 'o'
-			,	'Ó' => 'O'
-			,	'ó' => 'o'
-			,	'Ô' => 'O'
-			,	'ô' => 'o'
-			,	'Õ' => 'O'
-			,	'õ' => 'o'
-			,	'Ø' => 'O'
-			,	'ø' => 'o'
-			,	'ₒ' => 'o'
-			,	'Ö' => 'Oe'
-			,	'ö' => 'oe'
-			,	'Œ' => 'Oe'
-			,	'œ' => 'oe'
-			,	'ß' => 'ss'
-			,	'Š' => 'S'
-			,	'š' => 's'
+			,	'Ì' => 'I'	,	'ì' => 'i'	,	'Í' => 'I'	,	'í' => 'i'
+			,	'Î' => 'I'	,	'î' => 'i'	,	'Ï' => 'Ii'	,	'ï' => 'ii'
+			,	'Ñ' => 'N'	,	'ñ' => 'n'	,	'ⁿ' => 'n'
+			,	'Ò' => 'O'	,	'ò' => 'o'	,	'Ó' => 'O'	,	'ó' => 'o'
+			,	'Ô' => 'O'	,	'ô' => 'o'	,	'Õ' => 'O'	,	'õ' => 'o'
+			,	'Ø' => 'O'	,	'ø' => 'o'	,	'ₒ' => 'o'	,	'Ö' => 'Oe'
+			,	'ö' => 'oe'	,	'Œ' => 'Oe'	,	'œ' => 'oe'
+			,	'ß' => 'ss'	,	'Š' => 'S'	,	'š' => 's'
 			,	'™' => 'TM'
-			,	'Ù' => 'U'
-			,	'ù' => 'u'
-			,	'Ú' => 'U'
-			,	'ú' => 'u'
-			,	'Û' => 'U'
-			,	'û' => 'u'
-			,	'Ü' => 'Ue'
-			,	'ü' => 'ue'
-			,	'Ý' => 'Y'
-			,	'ý' => 'y'
-			,	'ÿ' => 'y'
-			,	'Ž' => 'Z'
-			,	'ž' => 'z'
+			,	'Ù' => 'U'	,	'ù' => 'u'	,	'Ú' => 'U'	,	'ú' => 'u'
+			,	'Û' => 'U'	,	'û' => 'u'	,	'Ü' => 'Ue'	,	'ü' => 'ue'
+			,	'Ý' => 'Y'	,	'ý' => 'y'	,	'ÿ' => 'y'
+			,	'Ž' => 'Z'	,	'ž' => 'z'
 			// misc
-			,	'¢' => 'Cent'
-			,	'€' => 'Euro'
-			,	'‰' => 'promille'
+			,	'¢' => 'Cent'	,	'€' => 'Euro'	,	'‰' => 'promille'
 			,	'№' => 'Nummer'
-			,	'℃' => 'Grad Celsius'
-			,	'°C' => 'Grad Celsius'
-			,	'℉' => 'Grad Fahrenheit'
-			,	'°F' => 'Grad Fahrenheit'
+			,	'℃' => 'Grad Celsius'	,	'°C' => 'Grad Celsius'
+			,	'℉' => 'Grad Fahrenheit',	'°F' => 'Grad Fahrenheit'
 			// Superscripts
-			,	'⁰' => '0'
-			,	'¹' => '1'
-			,	'²' => '2'
-			,	'³' => '3'
-			,	'⁴' => '4'
-			,	'⁵' => '5'
-			,	'⁶' => '6'
-			,	'⁷' => '7'
-			,	'⁸' => '8'
-			,	'⁹' => '9'
+			,	'⁰' => '0'	,	'¹' => '1'	,	'²' => '2'	,	'³' => '3'
+			,	'⁴' => '4'	,	'⁵' => '5'	,	'⁶' => '6'	,	'⁷' => '7'
+			,	'⁸' => '8'	,	'⁹' => '9'
 			// Subscripts
-			,	'₀' => '0'
-			,	'₁' => '1'
-			,	'₂' => '2'
-			,	'₃' => '3'
-			,	'₄' => '4'
-			,	'₅' => '5'
-			,	'₆' => '6'
-			,	'₇' => '7'
-			,	'₈' => '8'
-			,	'₉' => '9'
+			,	'₀' => '0'	,	'₁' => '1'	,	'₂' => '2'	,	'₃' => '3'
+			,	'₄' => '4'	,	'₅' => '5'	,	'₆' => '6'	,	'₇' => '7'
+			,	'₈' => '8'	,	'₉' => '9'
 			// Operators, punctuation
-			,	'±' => 'plusminus'
-			,	'×' => 'x'
-			,	'₊' => 'plus'
-			,	'₌' => '='
-			,	'⁼' => '='
+			,	'±' => 'plusminus'	,	'×' => 'x'	,	'₊' => 'plus'
+			,	'₌' => '='			,	'⁼' => '='
 			,	'⁻' => '-'    // sup minus
 			,	'₋' => '-'    // sub minus
 			,	'–' => '-'    // ndash
 			,	'—' => '-'    // mdash
 			,	'‑' => '-'    // non breaking hyphen
 			,	'․' => '.'    // one dot leader
-			,	'‥' => '..' // two dot leader
-			,	'…' => '...' // ellipsis
-			,	'‧' => '.'   // hyphenation point
+			,	'‥' => '..'  // two dot leader
+			,	'…' => '...'  // ellipsis
+			,	'‧' => '.'    // hyphenation point
 			,	' ' => '-'   // nobreak space
 		);
 
