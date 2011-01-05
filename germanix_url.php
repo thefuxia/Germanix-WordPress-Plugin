@@ -72,6 +72,7 @@ class Germanizer
 	static function sanitize_title_filter($title)
 	{
 		$title = self::sanitize_filename_filter( $title );
+		return $title;
 		return str_replace('.', '-', $title);
 	}
 
@@ -83,7 +84,7 @@ class Germanizer
 	static function lower_ascii($str)
 	{
 		$str = strtolower($str);
-		// Leave underscores, otherwise the taxonomy tag cloud in the backen won’t work anymore.
+		// Leave underscores, otherwise the taxonomy tag cloud in the backend won’t work anymore.
 		return preg_replace('~([^a-z\d_.-])~', '', $str);
 	}
 
