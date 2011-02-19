@@ -1,4 +1,13 @@
+h2. Deutsch
+
 Dieses Plugin ersetzt Nicht-ASCII-Zeichen durch passende Transliterationen in den Permalinks und den Namen hochgeladener Dateien.
 Aus dem Artikeltitel »Häßliches Entlein« wird also der Permalink »haessliches-entlein« gebildet, aus dem hochgeladenen Bild »Süßes Kätzchen.jpg« der Dateiname »suesses-kaetzchen.jpg«.
 
 Obendrein werden einige Ausdrücke im Backend ersetzt, etwa »Dashboard« durch »Übersicht«.
+
+h2. English
+
+This WordPress-Pugin repaces Non-ASCII characters with appropriate transliterations in permalinks and uploads.
+The title »Häßliches Entlein« becomes the permalink »haessliches-entlein«, the image »Süßes Kätzchen.jpg« »suesses-kaetzchen.jpg«.
+
+If your native language isn’t German you really don’t need »Germanix Translate«. :)
