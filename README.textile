@@ -7,7 +7,7 @@ Obendrein werden einige Ausdrücke im Backend ersetzt, etwa »Dashboard« durch 
 
 h2. English
 
-This WordPress-Pugin repaces Non-ASCII characters with appropriate transliterations in permalinks and uploads.
+This WordPress-Plugin replaces Non-ASCII characters with appropriate transliterations in permalinks and uploads.
 The title »Häßliches Entlein« becomes the permalink »haessliches-entlein«, the image »Süßes Kätzchen.jpg« »suesses-kaetzchen.jpg«.
 
 If your native language isn’t German you really don’t need »Germanix Translate«. :)
