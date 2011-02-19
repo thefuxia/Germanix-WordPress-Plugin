@@ -3,7 +3,7 @@
 Plugin Name: Germanix URL
 Plugin URI:  http://toscho.de/2010/wordpress-plugin-germanix/
 Description: Konvertiert URL-Slugs und Dateinamen nach US-ASCII.
-Version:     0.5
+Version:     0.7
 Author:      Thomas Scholz
 Author URI:  http://toscho.de
 Created:     13.05.2010
@@ -23,6 +23,8 @@ v 0.5
 v 0.6
 	* Fixed an issue with 'Invalid Taxonomy' in the backend.
 	  Props: Sergey Biryukov · http://sergeybiryukov.ru/
+v 0.7
+	* Added support for Turkish
 */
 
 if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
