@@ -25,20 +25,18 @@ v 0.6
 	  Props: Sergey Biryukov · http://sergeybiryukov.ru/
 v 0.7
 	* Added support for Turkish
+
+v 0.8
+	* Fix for http://core.trac.wordpress.org/ticket/16642
 */
 
 if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 {
-	remove_filter('sanitize_title', 'sanitize_title_with_dashes');
-	if ( ! empty ( $_POST )
-		|| ! empty ( $_GET['action'] ) && $_GET['action'] == 'edit'
-		|| defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST
-	)
-	{
-		add_filter('sanitize_title',
-			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 1);
-	}
-		#array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
+	remove_filter( 'sanitize_title', 'sanitize_title_with_dashes', 11 );
+
+	add_filter('sanitize_title',
+			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2);
+
 	// »häßliches-bild.jpg => haessliches-bild.jpg
 	add_filter('sanitize_file_name',
 		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
@@ -69,12 +67,17 @@ class Germanizer
 	 * Fixes URI slugs.
 	 *
 	 * @param  string $title
+	 * @param  string $raw_title
 	 * @return string
 	 */
-	static function sanitize_title_filter($title)
+	static function sanitize_title_filter($title, $raw_title = NULL)
 	{
+		if ( ! is_null( $raw_title ) )
+		{
+			$title = $raw_title;
+		}
 		$title = self::sanitize_filename_filter( $title );
-		return $title;
+		#return $title;
 		return str_replace('.', '-', $title);
 	}
 
