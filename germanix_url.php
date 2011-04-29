@@ -168,6 +168,8 @@ class Germanizer
 			,	' ' => '-'   // normal space
 		);
 
+		$utf8 = apply_filters( 'germanix_translit_list', $utf8 );
+
 		$str = strtr( $str, $utf8 );
 		return trim( $str, '-' );
 	}
