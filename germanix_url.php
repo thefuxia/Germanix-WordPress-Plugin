@@ -37,14 +37,14 @@ if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 	remove_filter( 'sanitize_title', 'sanitize_title_with_dashes', 11 );
 
 	add_filter('sanitize_title',
-			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2);
+			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2 );
 
 	// »häßliches bild.jpg« => haessliches-bild.jpg
 	add_filter('sanitize_file_name',
-		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
+		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1 );
 
 	add_filter('http_request_args',
-		array ( 'Germanizer', 'no_upgrade_check' ),       5, 2);
+		array ( 'Germanizer', 'no_upgrade_check' ),       5, 2 );
 }
 
 class Germanizer
@@ -56,11 +56,11 @@ class Germanizer
 	 * @param  string $filename
 	 * @return string
 	 */
-	static function sanitize_filename_filter($filename)
+	static function sanitize_filename_filter( $filename )
 	{
-		$filename = self::translit($filename);
-		$filename = self::lower_ascii($filename);
-		$filename = self::remove_doubles($filename);
+		$filename = self::translit( $filename );
+		$filename = self::lower_ascii( $filename );
+		$filename = self::remove_doubles( $filename );
 		// Readd the native sanitizer to catch underscores.
 		return $filename;
 	}
@@ -72,28 +72,28 @@ class Germanizer
 	 * @param  string $raw_title
 	 * @return string
 	 */
-	static function sanitize_title_filter($title, $raw_title = NULL)
+	static function sanitize_title_filter( $title, $raw_title = NULL )
 	{
 		if ( ! is_null( $raw_title ) )
 		{
 			$title = $raw_title;
 		}
 		$title = self::sanitize_filename_filter( $title );
-		$title = str_replace('.', '-', $title);
+		$title = str_replace('.', '-', $title );
 		// For %postname%-%post_id% permalinks.
 		return rtrim( $title, '-' );
 	}
 
-	static function remove_doubles($str)
+	static function remove_doubles( $str )
 	{
-		return preg_replace('~([-=+.])\\1+~', "\\1", $str);
+		return preg_replace('~([-=+.])\\1+~', "\\1", $str );
 	}
 
-	static function lower_ascii($str)
+	static function lower_ascii( $str )
 	{
-		$str = strtolower($str);
+		$str = strtolower( $str );
 		// Leave underscores, otherwise the taxonomy tag cloud in the backend won’t work anymore.
-		return preg_replace('~([^a-z\d_.-])~', '', $str);
+		return preg_replace('~([^a-z\d_.-])~', '', $str );
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Germanizer
 	 * @param  string $str
 	 * @return string
 	 */
-	static function translit($str)
+	static function translit( $str )
 	{
 		$utf8 = array (
 				'Ä' => 'Ae'	,	'ä' => 'ae'	,	'Æ' => 'Ae'	,	'æ' => 'ae'
@@ -168,8 +168,8 @@ class Germanizer
 			,	' ' => '-'   // normal space
 		);
 
-		$str = strtr($str, $utf8);
-		return trim($str, '-');
+		$str = strtr( $str, $utf8 );
+		return trim( $str, '-' );
 	}
 
 	/**
@@ -181,7 +181,7 @@ class Germanizer
 	 * @param  string $url
 	 * @return array
 	 */
-	static function no_upgrade_check($r, $url)
+	static function no_upgrade_check( $r, $url )
 	{
 		if ( 0 !== strpos(
 				$url
@@ -197,10 +197,10 @@ class Germanizer
 
 		unset (
 			$plugins->plugins[$p_base],
-			$plugins->active[array_search($p_base, $plugins->active)]
+			$plugins->active[array_search( $p_base, $plugins->active )]
 		);
 
-		$r['body']['plugins'] = serialize($plugins);
+		$r['body']['plugins'] = serialize( $plugins );
 
 		return $r;
 	}
