@@ -74,10 +74,8 @@ class Germanizer
 	 */
 	static function sanitize_title_filter( $title, $raw_title = NULL )
 	{
-		if ( ! is_null( $raw_title ) )
-		{
-			$title = $raw_title;
-		}
+		! is_null( $raw_title ) and $title = $raw_title;
+
 		$title = self::sanitize_filename_filter( $title );
 		$title = str_replace('.', '-', $title );
 		// For %postname%-%post_id% permalinks.
