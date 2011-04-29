@@ -79,8 +79,9 @@ class Germanizer
 			$title = $raw_title;
 		}
 		$title = self::sanitize_filename_filter( $title );
-		#return $title;
-		return str_replace('.', '-', $title);
+		$title = str_replace('.', '-', $title);
+		// For %postname%-%post_id% permalinks.
+		return rtrim( $title, '-' );
 	}
 
 	static function remove_doubles($str)
