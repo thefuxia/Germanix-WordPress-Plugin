@@ -7,6 +7,7 @@ Version:     0.9
 Author:      Thomas Scholz
 Author URI:  http://toscho.de
 Created:     13.05.2010
+License:     GPL
 
 Changelog
 
