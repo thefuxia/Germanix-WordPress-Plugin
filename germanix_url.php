@@ -82,6 +82,13 @@ class Germanizer
 		return rtrim( $title, '-' );
 	}
 
+	/**
+	 * Reduces repeated meta characters (-=+.) to one.
+	 *
+	 * @uses   apply_filters( 'germanix_remove_doubles_regex' )
+	 * @param  string $str Input string
+	 * @return string
+	 */
 	static function remove_doubles( $str )
 	{
 		$regex = apply_filters(
