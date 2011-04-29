@@ -28,7 +28,9 @@ v 0.7
 
 v 0.8
 	* Fix for http://core.trac.wordpress.org/ticket/16642
-*/
+
+ * @todo I18n for transliterations
+ */
 
 if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 {
@@ -37,7 +39,7 @@ if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 	add_filter('sanitize_title',
 			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2);
 
-	// »häßliches-bild.jpg => haessliches-bild.jpg
+	// »häßliches bild.jpg« => haessliches-bild.jpg
 	add_filter('sanitize_file_name',
 		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1);
 
@@ -138,7 +140,7 @@ class Germanizer
 			,	'Ž' => 'Z'	,	'ž' => 'z'
 			// misc
 			,	'¢' => 'Cent'	,	'€' => 'Euro'	,	'‰' => 'promille'
-			,	'№' => 'Nummer'
+			,	'№' => 'Nr'		,	'$' => 'Dollar'
 			,	'℃' => 'Grad Celsius'	,	'°C' => 'Grad Celsius'
 			,	'℉' => 'Grad Fahrenheit',	'°F' => 'Grad Fahrenheit'
 			// Superscripts
