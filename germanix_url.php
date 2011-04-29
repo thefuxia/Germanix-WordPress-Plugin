@@ -66,6 +66,9 @@ class Germanizer
 	/**
 	 * Fixes URI slugs.
 	 *
+	 * If you don't have any latin characters in your title you may end up
+	 * with an empty title. WordPress will use the post ID then.
+	 *
 	 * @param  string $title
 	 * @param  string $raw_title
 	 * @return string
@@ -75,7 +78,7 @@ class Germanizer
 		! is_null( $raw_title ) and $title = $raw_title;
 
 		$title = self::sanitize_filename_filter( $title );
-		$title = str_replace('.', '-', $title );
+		$title = str_replace( '.', '-', $title );
 		// For %postname%-%post_id% permalinks.
 		return rtrim( $title, '-' );
 	}
@@ -92,7 +95,7 @@ class Germanizer
 		$regex = apply_filters(
 			'germanix_remove_doubles_regex'
 		,	array (
-				'pattern'     =>  '~([-=+.])\\1+~'
+				'pattern'     => '~([-=+.])\\1+~'
 			,	'replacement' => "\\1"
 			)
 		);
