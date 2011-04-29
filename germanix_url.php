@@ -59,8 +59,8 @@ class Germanizer
 	static function sanitize_filename_filter($filename)
 	{
 		$filename = self::translit($filename);
-		$filename = self::remove_doubles($filename);
 		$filename = self::lower_ascii($filename);
+		$filename = self::remove_doubles($filename);
 		// Readd the native sanitizer to catch underscores.
 		return $filename;
 	}
