@@ -101,6 +101,12 @@ class Germanizer
 		return preg_replace( $regex['pattern'], $regex['replacement'], $str );
 	}
 
+	/**
+	 * Converts uppercase characters to lowercase and removes the rest.
+	 *
+	 * @param  string $str Input string
+	 * @return string
+	 */
 	static function lower_ascii( $str )
 	{
 		$str = strtolower( $str );
