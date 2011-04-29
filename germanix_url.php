@@ -105,15 +105,23 @@ class Germanizer
 	/**
 	 * Converts uppercase characters to lowercase and removes the rest.
 	 *
+	 * @uses   apply_filters( 'germanix_lower_ascii_regex' )
 	 * @param  string $str Input string
 	 * @return string
 	 */
 	static function lower_ascii( $str )
 	{
 		$str = strtolower( $str );
+		$regex = apply_filters(
+			'germanix_lower_ascii_regex'
+		,	array (
+				'pattern'     => '~([^a-z\d_.-])~'
+			,	'replacement' => ''
+			)
+		);
 		// Leave underscores, otherwise the taxonomy tag cloud in the
 		// backend won’t work anymore.
-		return preg_replace('~([^a-z\d_.-])~', '', $str );
+		return preg_replace( $regex['pattern'], $regex['replacement'], $str );
 	}
 
 	/**
