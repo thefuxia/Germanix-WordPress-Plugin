@@ -39,7 +39,6 @@ if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 	add_filter('sanitize_title',
 			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2 );
 
-	// »häßliches bild.jpg« => haessliches-bild.jpg
 	add_filter('sanitize_file_name',
 		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1 );
 
@@ -52,6 +51,7 @@ class Germanizer
 
 	/**
 	 * Fixes names of uploaded files.
+	 * »häßliches bild.jpg« => haessliches-bild.jpg
 	 *
 	 * @param  string $filename
 	 * @return string
