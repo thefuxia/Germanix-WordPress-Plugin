@@ -86,7 +86,14 @@ class Germanizer
 
 	static function remove_doubles( $str )
 	{
-		return preg_replace('~([-=+.])\\1+~', "\\1", $str );
+		$regex = apply_filters(
+			'germanix_remove_doubles_regex'
+		,	array (
+				'pattern'     =>  '~([-=+.])\\1+~'
+			,	'replacement' => "\\1"
+			)
+		);
+		return preg_replace( $regex['pattern'], $regex['replacement'], $str );
 	}
 
 	static function lower_ascii( $str )
