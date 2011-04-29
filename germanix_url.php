@@ -36,19 +36,18 @@ if ( is_admin() || ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) )
 {
 	remove_filter( 'sanitize_title', 'sanitize_title_with_dashes', 11 );
 
-	add_filter('sanitize_title',
+	add_filter( 'sanitize_title',
 			array ( 'Germanizer', 'sanitize_title_filter' ), 10, 2 );
 
-	add_filter('sanitize_file_name',
-		array ( 'Germanizer', 'sanitize_filename_filter' ), 10, 1 );
+	add_filter( 'sanitize_file_name',
+		array ( 'Germanizer', 'sanitize_filename_filter' ),  10, 1 );
 
-	add_filter('http_request_args',
-		array ( 'Germanizer', 'no_upgrade_check' ),       5, 2 );
+	add_filter( 'http_request_args',
+		array ( 'Germanizer', 'no_upgrade_check' ),           5, 2 );
 }
 
 class Germanizer
 {
-
 	/**
 	 * Fixes names of uploaded files.
 	 * »häßliches bild.jpg« => haessliches-bild.jpg
@@ -58,10 +57,9 @@ class Germanizer
 	 */
 	static function sanitize_filename_filter( $filename )
 	{
-		$filename = self::translit( $filename );
-		$filename = self::lower_ascii( $filename );
+		$filename = self::translit(       $filename );
+		$filename = self::lower_ascii(    $filename );
 		$filename = self::remove_doubles( $filename );
-		// Readd the native sanitizer to catch underscores.
 		return $filename;
 	}
 
@@ -110,15 +108,15 @@ class Germanizer
 	static function lower_ascii( $str )
 	{
 		$str = strtolower( $str );
-		// Leave underscores, otherwise the taxonomy tag cloud in the backend won’t work anymore.
+		// Leave underscores, otherwise the taxonomy tag cloud in the
+		// backend won’t work anymore.
 		return preg_replace('~([^a-z\d_.-])~', '', $str );
 	}
 
 	/**
 	 * Replaces non ASCII chars.
 	 *
-	 * http://github.com/wordpress/wordpress/blob/master/wp-includes/formatting.php#L531
-	 * is unfortunately completely inappropriate.
+	 * wp-includes/formatting.php#L531 is unfortunately completely inappropriate.
 	 * Modified version of Heiko Rabe’s code.
 	 *
 	 * @author Heiko Rabe http://code-styling.de
