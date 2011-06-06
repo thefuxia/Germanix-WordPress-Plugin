@@ -58,6 +58,8 @@ class Germanizer
 	 */
 	static function sanitize_filename_filter( $filename )
 	{
+		// Windows LiveWriter sends escaped strings.
+		$filename = html_entity_decode( $filename, ENT_QUOTES, 'utf-8' );
 		$filename = self::translit(       $filename );
 		$filename = self::lower_ascii(    $filename );
 		$filename = self::remove_doubles( $filename );
