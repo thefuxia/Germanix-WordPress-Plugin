@@ -3,7 +3,7 @@
 Plugin Name: Germanix URL
 Plugin URI:  http://toscho.de/2010/wordpress-plugin-germanix/
 Description: Konvertiert URL-Slugs und Dateinamen nach US-ASCII.
-Version:     1.0
+Version:     1.1
 Author:      Thomas Scholz
 Author URI:  http://toscho.de
 Created:     13.05.2010
@@ -85,6 +85,8 @@ class Germanizer
 
 		$title = self::sanitize_filename_filter( $title );
 		$title = str_replace( '.', '-', $title );
+		// Avoid double minus. WordPress cannot resolve such URLs.
+		$title = preg_replace( '~--+~', '-', $title );
 		// For %postname%-%post_id% permalinks.
 		return rtrim( $title, '-' );
 	}
@@ -101,7 +103,7 @@ class Germanizer
 		$regex = apply_filters(
 			'germanix_remove_doubles_regex'
 		,	array (
-				'pattern'     => '~([-=+.])\\1+~'
+				'pattern'     => '~([=+.-])\\1+~'
 			,	'replacement' => "\\1"
 			)
 		);
