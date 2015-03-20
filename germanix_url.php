@@ -378,22 +378,22 @@ class Germanizer
 	{
 		if ( 0 !== strpos(
 				$url
-			,	'http://api.wordpress.org/plugins/update-check'
+				,	'https://api.wordpress.org/plugins/update-check'
 			)
 		)
 		{ // Not a plugin update request. Bail immediately.
 			return $r;
 		}
-
-		$plugins = unserialize( $r['body']['plugins'] );
+		
+		$plugins = json_decode( $r['body']['plugins'], true );
 		$p_base  = plugin_basename( __FILE__ );
-
+		
 		unset (
-			$plugins->plugins[$p_base],
-			$plugins->active[array_search( $p_base, $plugins->active )]
+			$plugins['plugins'][$p_base],
+			$plugins['active'][array_search( $p_base, $plugins['active'] )]
 		);
 
-		$r['body']['plugins'] = serialize( $plugins );
+		$r['body']['plugins'] = json_encode( $plugins );
 
 		return $r;
 	}
